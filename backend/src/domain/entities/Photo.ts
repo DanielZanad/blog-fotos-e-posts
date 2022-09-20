@@ -1,6 +1,7 @@
 import { Entity } from '../../core/domain/Entity';
 
-type PhotoProps = {
+export type PhotoProps = {
+  id?: string;
   title: string;
   url: string;
   thumbnail_url: string;

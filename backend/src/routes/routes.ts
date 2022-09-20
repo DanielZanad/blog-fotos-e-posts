@@ -1,5 +1,13 @@
-import { Post, Photo } from '@prisma/client';
+import { Photo } from '@prisma/client';
 import { Router } from 'express';
+import { PrismaPostRepository } from '../application/repositories/prisma/prisma-post-repository';
+import { CreatePostUseCase } from '../application/useCases/Post/create-post-use-case';
+import { DeletePostWithIdUseCase } from '../application/useCases/Post/delete-post-with-id';
+import { EditPostWithIdUseCase } from '../application/useCases/Post/edit-post-with-id-use-case';
+import { ListAllPostsUseCase } from '../application/useCases/Post/list-all-posts-use-case';
+import { ListPostWithIdUseCase } from '../application/useCases/Post/list-post-with-id-use-case';
+import { PostProps } from '../domain/entities/Post';
+
 import { prisma } from '../prisma/prisma';
 
 export const routes = Router();
@@ -8,18 +16,28 @@ export const routes = Router();
 routes.post('/posts', async (req, res) => {
   const { title, body } = req.body;
 
-  const result: Post = await prisma.post.create({
-    data: {
-      title,
-      body,
-    },
+  const prismaPostRepository = new PrismaPostRepository();
+  const createPostUseCase = new CreatePostUseCase(prismaPostRepository);
+
+  const result = await createPostUseCase.execute({
+    title,
+    body,
   });
 
-  return res.status(201).json({ data: result });
+  return res.status(201).json({ data: result.props });
 });
 
 routes.get('/posts', async (req, res) => {
-  const result: Array<Post> = await prisma.post.findMany();
+  const result: PostProps[] = [];
+
+  const prismaPostRepository = new PrismaPostRepository();
+  const listAllPostsUseCase = new ListAllPostsUseCase(prismaPostRepository);
+
+  const posts = await listAllPostsUseCase.execute();
+
+  posts.forEach((post) => {
+    result.push(post.props);
+  });
 
   return res.status(200).json({ data: result });
 });
@@ -27,41 +45,37 @@ routes.get('/posts', async (req, res) => {
 routes.get('/posts/:id', async (req, res) => {
   const { id } = req.params;
 
-  const result: Post = await prisma.post.findUniqueOrThrow({
-    where: {
-      id,
-    },
-  });
+  const prismaPostRepository = new PrismaPostRepository();
+  const listPostWithIdUseCase = new ListPostWithIdUseCase(prismaPostRepository);
 
-  return res.status(200).json({ data: result });
+  const result = await listPostWithIdUseCase.execute({ id });
+  return res.status(200).json({ data: result.props });
 });
 
 routes.put('/posts/:id', async (req, res) => {
   const { id } = req.params;
   const { title, body } = req.body;
 
-  const result: Post = await prisma.post.update({
-    where: {
-      id,
-    },
-    data: {
-      title,
-      body,
-    },
-  });
+  const prismaPostRepository = new PrismaPostRepository();
 
-  return res.status(200).json({ data: result });
+  const editPostWithIdUseCase = new EditPostWithIdUseCase(prismaPostRepository);
+
+  const result = await editPostWithIdUseCase.execute({ id, title, body });
+
+  return res.status(200).json({ data: result.props });
 });
 
 routes.delete('/posts/:id', async (req, res) => {
   const { id } = req.params;
-  const result: Post = await prisma.post.delete({
-    where: {
-      id,
-    },
-  });
 
-  return res.status(200).json({ data: result });
+  const prismaPostRepository = new PrismaPostRepository();
+  const deletePostWithIdUseCase = new DeletePostWithIdUseCase(
+    prismaPostRepository,
+  );
+
+  const result = await deletePostWithIdUseCase.execute({ id });
+
+  return res.status(200).json({ data: result.props });
 });
 
 // Photos
