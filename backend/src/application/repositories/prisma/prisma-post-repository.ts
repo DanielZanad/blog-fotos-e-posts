@@ -20,10 +20,12 @@ export class PrismaPostRepository implements PostRepository {
 
   async getAllPosts(): Promise<Array<Post> | null> {
     const posts = await prisma.post.findMany();
+
     const result: Array<Post> = [];
     posts.forEach((post) => {
       result.push(Post.create(post));
     });
+
     return result;
   }
 

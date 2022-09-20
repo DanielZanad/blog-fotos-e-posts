@@ -1,6 +1,7 @@
 import { Entity } from '../../core/domain/Entity';
 
-type PostProps = {
+export type PostProps = {
+  id?: string;
   title: string;
   body: string;
 };
