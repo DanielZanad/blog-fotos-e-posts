@@ -22,7 +22,7 @@ export class PrismaPhotoRepository implements PhotoRepository {
 
     return Photo.create(result);
   }
-  async getAllPosts(): Promise<Photo[] | null> {
+  async getAllPhotos(): Promise<Photo[] | null> {
     const photos = await prisma.photo.findMany();
     const result: Array<Photo> = [];
     photos.forEach((photo) => {
@@ -31,7 +31,7 @@ export class PrismaPhotoRepository implements PhotoRepository {
 
     return result;
   }
-  async getPostById(id: string): Promise<Photo | null> {
+  async getPhotoById(id: string): Promise<Photo | null> {
     const result = await prisma.photo.findUniqueOrThrow({
       where: {
         id,
@@ -40,7 +40,7 @@ export class PrismaPhotoRepository implements PhotoRepository {
 
     return Photo.create(result);
   }
-  async editPostById({
+  async editPhotoById({
     id,
     title,
     url,
@@ -59,7 +59,7 @@ export class PrismaPhotoRepository implements PhotoRepository {
 
     return Photo.create(result);
   }
-  async deletePostById(id: string): Promise<Photo | null> {
+  async deletePhotoById(id: string): Promise<Photo | null> {
     const result = await prisma.photo.delete({
       where: {
         id,

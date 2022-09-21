@@ -15,8 +15,8 @@ export interface PhotoEditData {
 
 export interface PhotoRepository {
   create(data: PhotoCreateData): Promise<Photo | null>;
-  getAllPosts(): Promise<Array<Photo> | null>;
-  getPostById(id: string): Promise<Photo | null>;
-  editPostById(data: PhotoEditData): Promise<Photo | null>;
-  deletePostById(id: string): Promise<Photo | null>;
+  getAllPhotos(): Promise<Array<Photo> | null>;
+  getPhotoById(id: string): Promise<Photo | null>;
+  editPhotoById(data: PhotoEditData): Promise<Photo | null>;
+  deletePhotoById(id: string): Promise<Photo | null>;
 }

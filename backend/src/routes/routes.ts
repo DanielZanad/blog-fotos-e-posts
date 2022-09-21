@@ -1,11 +1,18 @@
 import { Photo } from '@prisma/client';
 import { Router } from 'express';
+import { PrismaPhotoRepository } from '../application/repositories/prisma/prisma-photo-repository';
 import { PrismaPostRepository } from '../application/repositories/prisma/prisma-post-repository';
+import { CreatePhotoUseCase } from '../application/useCases/Photo/create-photo-use-case';
+import { DeletePhotoWithIdUseCase } from '../application/useCases/Photo/delete-photo-with-id-use-case';
+import { EditPhotoWithIdUseCase } from '../application/useCases/Photo/edit-photo-with-id-use-case';
+import { ListAllPhotosUseCase } from '../application/useCases/Photo/list-all-photos-use-case';
+import { ListPhotoWithIdUseCase } from '../application/useCases/Photo/list-photo-with-id-use-case';
 import { CreatePostUseCase } from '../application/useCases/Post/create-post-use-case';
-import { DeletePostWithIdUseCase } from '../application/useCases/Post/delete-post-with-id';
+import { DeletePostWithIdUseCase } from '../application/useCases/Post/delete-post-with-id-use-case';
 import { EditPostWithIdUseCase } from '../application/useCases/Post/edit-post-with-id-use-case';
 import { ListAllPostsUseCase } from '../application/useCases/Post/list-all-posts-use-case';
 import { ListPostWithIdUseCase } from '../application/useCases/Post/list-post-with-id-use-case';
+import { PhotoProps } from '../domain/entities/Photo';
 import { PostProps } from '../domain/entities/Post';
 
 import { prisma } from '../prisma/prisma';
@@ -83,19 +90,28 @@ routes.delete('/posts/:id', async (req, res) => {
 routes.post('/photos', async (req, res) => {
   const { title, url, thumbnail_url } = req.body;
 
-  const result: Photo = await prisma.photo.create({
-    data: {
-      title,
-      url,
-      thumbnail_url,
-    },
+  const prismaPhotoRepository = new PrismaPhotoRepository();
+  const createPhotoUseCase = new CreatePhotoUseCase(prismaPhotoRepository);
+
+  const result = await createPhotoUseCase.execute({
+    title,
+    url,
+    thumbnail_url,
   });
 
-  return res.status(201).json({ data: result });
+  return res.status(201).json({ data: result.props });
 });
 
 routes.get('/photos', async (req, res) => {
-  const result: Array<Photo> = await prisma.photo.findMany();
+  const result: PhotoProps[] = [];
+
+  const prismaPhotoRepository = new PrismaPhotoRepository();
+  const listAllPhotosUseCase = new ListAllPhotosUseCase(prismaPhotoRepository);
+
+  const photos = await listAllPhotosUseCase.execute();
+  photos.forEach((photo) => {
+    result.push(photo.props);
+  });
 
   return res.status(200).json({ data: result });
 });
@@ -103,40 +119,44 @@ routes.get('/photos', async (req, res) => {
 routes.get('/photos/:id', async (req, res) => {
   const { id } = req.params;
 
-  const result: Photo = await prisma.photo.findUniqueOrThrow({
-    where: {
-      id,
-    },
-  });
+  const prismaPhotoRepository = new PrismaPhotoRepository();
+  const listPhotoWithIdUseCase = new ListPhotoWithIdUseCase(
+    prismaPhotoRepository,
+  );
 
-  return res.status(200).json({ data: result });
+  const result = await listPhotoWithIdUseCase.execute({ id });
+
+  return res.status(200).json({ data: result.props });
 });
 
 routes.put('/photos/:id', async (req, res) => {
   const { id } = req.params;
   const { title, url, thumbnail_url } = req.body;
 
-  const result: Photo = await prisma.photo.update({
-    where: {
-      id,
-    },
-    data: {
-      title,
-      url,
-      thumbnail_url,
-    },
+  const prismaPhotoRepository = new PrismaPhotoRepository();
+  const editPhotoWithIdUseCase = new EditPhotoWithIdUseCase(
+    prismaPhotoRepository,
+  );
+
+  const result = await editPhotoWithIdUseCase.execute({
+    id,
+    title,
+    url,
+    thumbnail_url,
   });
 
-  return res.status(200).json({ data: result });
+  return res.status(200).json({ data: result.props });
 });
 
 routes.delete('/photos/:id', async (req, res) => {
   const { id } = req.params;
-  const result: Photo = await prisma.photo.delete({
-    where: {
-      id,
-    },
-  });
 
-  return res.status(200).json({ data: result });
+  const prismaPhotoRepository = new PrismaPhotoRepository();
+  const deletePhotoWithIdUseCase = new DeletePhotoWithIdUseCase(
+    prismaPhotoRepository,
+  );
+
+  const result = await deletePhotoWithIdUseCase.execute({ id });
+
+  return res.status(200).json({ data: result.props });
 });
