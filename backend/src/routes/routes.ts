@@ -1,4 +1,3 @@
-import { Photo } from '@prisma/client';
 import { Router } from 'express';
 import { PrismaPhotoRepository } from '../application/repositories/prisma/prisma-photo-repository';
 import { PrismaPostRepository } from '../application/repositories/prisma/prisma-post-repository';
@@ -14,8 +13,6 @@ import { ListAllPostsUseCase } from '../application/useCases/Post/list-all-posts
 import { ListPostWithIdUseCase } from '../application/useCases/Post/list-post-with-id-use-case';
 import { PhotoProps } from '../domain/entities/Photo';
 import { PostProps } from '../domain/entities/Post';
-
-import { prisma } from '../prisma/prisma';
 
 export const routes = Router();
 
