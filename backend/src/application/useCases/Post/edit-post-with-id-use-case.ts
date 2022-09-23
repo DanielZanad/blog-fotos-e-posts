@@ -13,6 +13,18 @@ export class EditPostWithIdUseCase {
   async execute(request: EditPostWithIdRequest): Promise<Post> {
     const { id, title, body } = request;
 
+    if (!id) {
+      throw new Error('Id is missing');
+    }
+
+    if (!title) {
+      throw new Error('Id is missing');
+    }
+
+    if (!body) {
+      throw new Error('Id is missing');
+    }
+
     const result = await this.postRepository.editPostById({ id, title, body });
 
     if (result === null) throw new Error('Internal Server Error');

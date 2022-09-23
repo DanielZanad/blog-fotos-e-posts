@@ -11,7 +11,11 @@ export class ListPostWithIdUseCase {
   async execute(request: ListPostWithIdRequest): Promise<Post> {
     const { id } = request;
 
-    const result = await this.postRepository.getPostById(id);
+    if (!id) {
+      throw new Error('Id is missing');
+    }
+
+    const result = await this.postRepository.listPostById(id);
 
     if (result === null) throw new Error('Internal Server Error');
 
