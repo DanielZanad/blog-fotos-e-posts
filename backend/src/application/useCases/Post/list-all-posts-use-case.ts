@@ -5,7 +5,7 @@ export class ListAllPostsUseCase {
   constructor(private postResository: PostRepository) {}
 
   async execute(): Promise<Array<Post>> {
-    const result = await this.postResository.getAllPosts();
+    const result = await this.postResository.listAllPosts();
 
     if (result === null) throw new Error('Internal Server Error');
 

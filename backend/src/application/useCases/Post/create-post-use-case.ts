@@ -12,6 +12,14 @@ export class CreatePostUseCase {
   async execute(request: CreatePostUseCaseRequest): Promise<Post> {
     const { title, body } = request;
 
+    if (!title) {
+      throw new Error('Title is missing');
+    }
+
+    if (!body) {
+      throw new Error('Body is missing');
+    }
+
     const result = await this.postRepository.create({
       title,
       body,

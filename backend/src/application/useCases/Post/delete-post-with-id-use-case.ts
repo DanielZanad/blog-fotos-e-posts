@@ -11,6 +11,10 @@ export class DeletePostWithIdUseCase {
   async execute(request: DeletePostWithIdRequest): Promise<Post> {
     const { id } = request;
 
+    if (!id) {
+      throw new Error('Id is missing');
+    }
+
     const result = await this.postRepository.deletePostById(id);
 
     if (result === null) throw new Error('Internal Server Error');

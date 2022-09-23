@@ -18,7 +18,7 @@ export class PrismaPostRepository implements PostRepository {
     return Post.create(result);
   }
 
-  async getAllPosts(): Promise<Array<Post> | null> {
+  async listAllPosts(): Promise<Array<Post> | null> {
     const posts = await prisma.post.findMany();
 
     const result: Array<Post> = [];
@@ -29,7 +29,7 @@ export class PrismaPostRepository implements PostRepository {
     return result;
   }
 
-  async getPostById(id: string): Promise<Post | null> {
+  async listPostById(id: string): Promise<Post | null> {
     const result = await prisma.post.findUniqueOrThrow({
       where: {
         id,
