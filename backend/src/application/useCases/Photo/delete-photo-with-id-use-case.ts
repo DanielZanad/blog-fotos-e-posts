@@ -11,6 +11,8 @@ export class DeletePhotoWithIdUseCase {
   async execute(request: DeletePhotoWithIdRequest): Promise<Photo> {
     const { id } = request;
 
+    if (!id) throw new Error('Id is missing');
+
     const result = await this.photoRepository.deletePhotoById(id);
 
     if (result === null) throw new Error('Internal Server Error');

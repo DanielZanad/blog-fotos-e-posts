@@ -22,7 +22,7 @@ export class PrismaPhotoRepository implements PhotoRepository {
 
     return Photo.create(result);
   }
-  async getAllPhotos(): Promise<Photo[] | null> {
+  async listAllPhotos(): Promise<Photo[] | null> {
     const photos = await prisma.photo.findMany();
     const result: Array<Photo> = [];
     photos.forEach((photo) => {
@@ -31,7 +31,7 @@ export class PrismaPhotoRepository implements PhotoRepository {
 
     return result;
   }
-  async getPhotoById(id: string): Promise<Photo | null> {
+  async listPhotoById(id: string): Promise<Photo | null> {
     const result = await prisma.photo.findUniqueOrThrow({
       where: {
         id,

@@ -38,7 +38,7 @@ describe('Delete post with id', () => {
 
     await expect(
       sut.execute({
-        id: '',
+        id: '098',
       }),
     ).rejects.toThrow();
 

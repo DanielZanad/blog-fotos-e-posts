@@ -19,7 +19,7 @@ describe('List all posts', () => {
 
     const response = sut.execute();
 
-    await expect(listAllPosts.execute()).resolves.not.toThrow;
+    await expect(listAllPosts.execute()).resolves.not.toThrow();
 
     expect(listAllPostsSpy).toBeCalled();
     expect(response).toBeTruthy();
