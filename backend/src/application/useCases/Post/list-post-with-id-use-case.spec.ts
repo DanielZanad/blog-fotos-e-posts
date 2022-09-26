@@ -25,7 +25,7 @@ describe('List post with id', () => {
       listPostWithId.execute({
         id: '123',
       }),
-    ).resolves.not.toThrow;
+    ).resolves.not.toThrow();
 
     expect(listPostWithIdSpy).toBeCalled();
     expect(response).toBeTruthy();

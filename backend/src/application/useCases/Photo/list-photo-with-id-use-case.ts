@@ -11,7 +11,7 @@ export class ListPhotoWithIdUseCase {
   async execute(request: ListPhotoWithIdRequest): Promise<Photo> {
     const { id } = request;
 
-    const result = await this.photoRepository.getPhotoById(id);
+    const result = await this.photoRepository.listPhotoById(id);
 
     if (result === null) throw new Error('Internal Server Error');
 

@@ -29,7 +29,7 @@ describe('Edit a post', () => {
         title: 'test edit title',
         body: 'test edit body',
       }),
-    ).resolves.not.toThrow;
+    ).resolves.not.toThrow();
 
     expect(editPostByIdSpy).toBeCalled();
     expect(response).toBeTruthy();
