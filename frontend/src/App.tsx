@@ -23,7 +23,7 @@ function App() {
   const context = useContext(PostContext);
   const [modalTitleMessage, setModalTitleMessage] = useState('');
   const [modalBodyMessage, setModalBodyMessage] = useState('');
-  const { data, loading, error } = useFetchData('/posts');
+  const { data, loading } = useFetchData('/posts');
 
   useEffect(() => {
     if (data) {

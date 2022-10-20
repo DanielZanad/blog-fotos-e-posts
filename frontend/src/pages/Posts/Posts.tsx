@@ -15,12 +15,16 @@ import { PostContext } from '../../context/PostContext';
 
 export const Posts = () => {
   const [posts, setPosts] = useState<Array<IPost>>();
+  const context = useContext(PostContext);
 
-  const { data, loading, error } = useFetchData('/posts');
+  const { data, loading } = useFetchData('/posts');
 
   useEffect(() => {
     setPosts(data);
-  }, [data]);
+  }, [data, posts, context?.posts]);
+
+  if (loading) return <p>Carregando...</p>;
+
   return (
     <div className="card_container">
       {posts &&

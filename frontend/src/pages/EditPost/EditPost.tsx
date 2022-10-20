@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 // Hooks
 import { useDeleteData } from '../../hooks/useDeleteData';
 import { useFetchDataById } from '../../hooks/useFetchDataById';
+import { useEditDataById } from '../../hooks/useEditDataById';
 
 import { IPost } from '../../interfaces/Post';
 
@@ -18,27 +19,29 @@ const EditPost = ({
   setModalBodyMessage,
 }: CreatePostProps) => {
   const { id } = useParams();
-  const [post, setPost] = useState<IPost | undefined>();
+  const [post, setPost] = useState<IPost>();
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const { data, loading } = useFetchDataById('/posts', id);
-  const { deleteData, response } = useDeleteData();
+  const { deleteData, response: responseDelete } = useDeleteData();
+  const { editData, response: responseEdit } = useEditDataById();
   const navigate = useNavigate();
 
   useEffect(() => {
     setPost(data);
+
     if (post) {
       setTitle(post.title);
       setBody(post.body);
     }
-  }, [data]);
+  }, [data, post]);
 
   if (loading) return <p>Carregando...</p>;
 
   const handleDelete = () => {
     deleteData('/posts', id);
-    if (response.error === null) {
-      navigate('/posts');
+    if (responseDelete.error === null) {
+      navigate('/post/create');
       const modal = document.querySelector('#modal');
       setModalTitleMessage('Post Deletado');
       setModalBodyMessage('Post foi deletado com sucesso');
@@ -46,8 +49,25 @@ const EditPost = ({
     } else {
       navigate('/posts');
       const modal = document.querySelector('#modal');
-      setModalTitleMessage(response.error);
-      setModalBodyMessage(response.error);
+      setModalTitleMessage(responseDelete.error);
+      setModalBodyMessage(responseDelete.error);
+      modal?.classList.remove('hide');
+    }
+  };
+
+  const handleEdit = () => {
+    editData('/posts', id, { title, body });
+    if (responseEdit.error === null) {
+      navigate('/post/create');
+      const modal = document.querySelector('#modal');
+      setModalTitleMessage('Post Editado');
+      setModalBodyMessage('Post foi editado com sucesso');
+      modal?.classList.remove('hide');
+    } else {
+      navigate('/posts');
+      const modal = document.querySelector('#modal');
+      setModalTitleMessage(responseEdit.error);
+      setModalBodyMessage(responseEdit.error);
       modal?.classList.remove('hide');
     }
   };
@@ -78,8 +98,12 @@ const EditPost = ({
           ></textarea>
         </label>
         <div className="btn_container_form">
-          {!response.loading && <button className="btn">Editar</button>}
-          {response.loading && <button className="btn">Aguarde...</button>}
+          {!responseEdit.loading && (
+            <button className="btn" onClick={handleEdit}>
+              Editar
+            </button>
+          )}
+          {responseEdit.loading && <button className="btn">Aguarde...</button>}
           <button className="btn" onClick={handleDelete}>
             Deletar
           </button>

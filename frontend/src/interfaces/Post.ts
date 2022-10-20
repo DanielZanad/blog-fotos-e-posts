@@ -12,6 +12,11 @@ export interface IStorePost {
   body: string;
 }
 
+export interface IEditPost {
+  title: string;
+  body: string;
+}
+
 export type PostContextType = {
   posts: IPost[];
   setPost: React.Dispatch<React.SetStateAction<IPost[]>>;
